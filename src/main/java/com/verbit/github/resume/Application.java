@@ -1,4 +1,4 @@
-package com.ortum.search.engine;
+package com.verbit.github.resume;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

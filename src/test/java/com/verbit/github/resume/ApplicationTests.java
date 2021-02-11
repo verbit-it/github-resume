@@ -1,4 +1,4 @@
-package com.ortum.search.engine;
+package com.verbit.github.resume;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
