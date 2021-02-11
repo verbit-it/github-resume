@@ -8,6 +8,7 @@
 		<version>2.4.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+	<groupId>com.verbit</groupId>
 	<artifactId>github-resume-web</artifactId>
 	<name>Github-Resume-Service-Web</name>
 	<description>Github-Resume-Service-Web</description>
@@ -20,6 +21,19 @@
 		<vaadin.version>14.4.7</vaadin.version>
 	</properties>
 
+	<developers>
+	    <developer>
+	      <id>pv</id>
+	      <name>Peter Verbitskiy</name>
+	      <email>peter.verbitskiy@gmail.com</email>
+	      <url>http://www.verbit-it.de</url>
+	      <roles>
+	        <role>architect</role>
+	        <role>developer</role>
+	      </roles>
+	    </developer>
+  	</developers>
+  	
 	<organization>
     	<name>VERBIT-IT</name>
    		 <url>http://www.verbit-it.de</url>
