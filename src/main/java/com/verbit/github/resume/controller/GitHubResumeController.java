@@ -33,13 +33,13 @@ public class GitHubResumeController {
 	@Autowired
 	private ModelMapper modelMapper;
 
-	@GetMapping(value = "resume/{account}", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public @ResponseBody GitHubResumeDto getAccount(@PathVariable("account") String accountOwner) {
+	@GetMapping(value = "resume/{account}", produces = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.APPLICATION_XML_VALUE }, consumes = MediaType.ALL_VALUE)
+	public @ResponseBody GitHubResumeDto getAccount(@PathVariable("account") String accountOwner, String mediaType) {
 		GitHubAccountOwnerDao gitHubAccountOwnerDao = gitHubResumeService.getGitHubAccount(accountOwner);
 		List<GitHubRepositoryDao> gitHubRepositoryDaoList = gitHubResumeService
 				.getGitHubRepositoriesForAccount(accountOwner);
 		GitHubResumeDao dao = fillDao(gitHubAccountOwnerDao, gitHubRepositoryDaoList);
-
 		return modelMapper.map(dao, GitHubResumeDto.class);
 	}
 
@@ -60,7 +60,6 @@ public class GitHubResumeController {
 		List<GitHubStatisticalDataDao> gitHubStatisticalDataDaoList = new ArrayList<>();
 
 		if (!ListUtils.isEmpty(gitHubRepositoryDaoList)) {
-
 			Map<String, List<GitHubRepositoryDao>> map = gitHubRepositoryDaoList.stream()
 					.filter(dao -> !StringUtils.isEmpty(dao.getLanguage()))
 					.collect(Collectors.groupingBy(GitHubRepositoryDao::getLanguage));
