@@ -11,6 +11,7 @@
 	</parent>
 	<groupId>com.verbit</groupId>
 	<artifactId>github-resume-web</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
 	<name>Github-Resume-Service-Web</name>
 	<description>Github-Resume-Service-Web</description>
 	<packaging>jar</packaging>
