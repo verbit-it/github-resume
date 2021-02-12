@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.thymeleaf.util.ListUtils;
+import org.thymeleaf.util.StringUtils;
 
 import com.verbit.github.resume.dao.GitHubAccountOwnerDao;
 import com.verbit.github.resume.dao.GitHubRepositoryDao;
@@ -61,6 +62,7 @@ public class GitHubResumeController {
 		if (!ListUtils.isEmpty(gitHubRepositoryDaoList)) {
 
 			Map<String, List<GitHubRepositoryDao>> map = gitHubRepositoryDaoList.stream()
+					.filter(dao -> !StringUtils.isEmpty(dao.getLanguage()))
 					.collect(Collectors.groupingBy(GitHubRepositoryDao::getLanguage));
 
 			map.forEach((language, repoList) -> calculateStatisticalData(language, repoList,
