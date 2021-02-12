@@ -12,6 +12,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.thymeleaf.util.StringUtils;
 
 import com.verbit.github.resume.configuration.GitHubAccessProperties;
 import com.verbit.github.resume.dao.GitHubAccountOwnerDao;
@@ -54,8 +55,10 @@ public class GitHubRestClient {
 	private HttpEntity<String> initHeader() {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("User-Agent", "profile-analyzer");
+		if (!StringUtils.isEmpty(gitHubAccessProperties.getToken())) {
+			headers.setBearerAuth(gitHubAccessProperties.getToken());
+		}
 		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 		return new HttpEntity<>("parameters", headers);
 	}
-
 }
