@@ -1,45 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.4.2</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.verbit</groupId>
 	<artifactId>github-resume-web</artifactId>
 	<name>Github-Resume-Service-Web</name>
 	<description>Github-Resume-Service-Web</description>
 	<packaging>jar</packaging>
-	
+
 	<properties>
 		<app.id>github-resume-service-web</app.id>
 		<app.name>Github-Resume-Service-Web</app.name>
 		<app.longname>Github-Resume-Service-Web</app.longname>
+		<spring-boot.version>2.4.2</spring-boot.version>
+		<java.version>11</java.version>
 		<vaadin.version>14.4.7</vaadin.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<developers>
-	    <developer>
-	      <id>pv</id>
-	      <name>Peter Verbitskiy</name>
-	      <email>peter.verbitskiy@gmail.com</email>
-	      <url>http://www.verbit-it.de</url>
-	      <roles>
-	        <role>architect</role>
-	        <role>developer</role>
-	      </roles>
-	    </developer>
-  	</developers>
-  	
+		<developer>
+			<id>pv</id>
+			<name>Peter Verbitskiy</name>
+			<email>peter.verbitskiy@gmail.com</email>
+			<url>http://www.verbit-it.de</url>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+		</developer>
+	</developers>
+
 	<organization>
-    	<name>VERBIT-IT</name>
-   		 <url>http://www.verbit-it.de</url>
-  	</organization>
-	
-	 <dependencies>
+		<name>VERBIT-IT</name>
+		<url>http://www.verbit-it.de</url>
+	</organization>
+
+	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-rest</artifactId>
@@ -57,14 +61,9 @@
 			<artifactId>spring-boot-starter-web-services</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin-spring-boot-starter</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.session</groupId>
 			<artifactId>spring-session-core</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -82,52 +81,21 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.modelmapper</groupId>
+			<artifactId>modelmapper</artifactId>
+			<version>2.3.9</version>
+		</dependency>
 	</dependencies>
-	
-	 <dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>com.vaadin</groupId>
-				<artifactId>vaadin-bom</artifactId>
-				<version>${vaadin.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-	 
-		<profiles>
-		<profile>
-			<id>production</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>com.vaadin</groupId>
-						<artifactId>vaadin-maven-plugin</artifactId>
-						<version>${vaadin.version}</version>
-						<executions>
-							<execution>
-								<id>frontend</id>
-								<phase>compile</phase>
-								<goals>
-									<goal>prepare-frontend</goal>
-									<goal>build-frontend</goal>
-								</goals>
-								<configuration>
-									<productionMode>true</productionMode>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
-	 
+
 	<build>
 		<plugins>
 			<plugin>
