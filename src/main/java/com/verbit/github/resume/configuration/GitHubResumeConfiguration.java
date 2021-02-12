@@ -11,14 +11,4 @@ public class GitHubResumeConfiguration {
 	public ModelMapper modelMapper() {
 		return new ModelMapper();
 	}
-
-	String endpoint;
-
-	public String getEndpoint() {
-		return endpoint;
-	}
-
-	public void setEndpoint(String endpoint) {
-		this.endpoint = endpoint;
-	}
 }
