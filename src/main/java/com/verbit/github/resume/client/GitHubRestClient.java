@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.verbit.github.resume.configuration.GitHubAccessProperties;
@@ -47,9 +48,14 @@ public class GitHubRestClient {
 	public GitHubAccountOwnerDao getGitHubAccount(String accountOwner) {
 		String gitHubUri = gitHubAccessProperties.getEndpoint() + API_USERS + "/" + accountOwner;
 		HttpEntity<String> headerEntity = initHeader();
-		GitHubAccountOwnerDto dto = restTemplate
-				.exchange(gitHubUri, HttpMethod.GET, headerEntity, GitHubAccountOwnerDto.class).getBody();
-		return modelMapper.map(dto, GitHubAccountOwnerDao.class);
+		try {
+			GitHubAccountOwnerDto dto = restTemplate
+					.exchange(gitHubUri, HttpMethod.GET, headerEntity, GitHubAccountOwnerDto.class).getBody();
+			return modelMapper.map(dto, GitHubAccountOwnerDao.class);
+		} catch (RestClientException ex) {
+			// github username not found
+			return null;
+		}
 	}
 
 	private HttpEntity<String> initHeader() {

@@ -44,13 +44,15 @@ public class GitHubResumeController {
 	public ResponseEntity<GitHubResumeDto> getAccount(@PathVariable("account") String accountOwner,
 			@RequestParam(name = "mediaType", required = false) String requestedMediaType,
 			@RequestHeader HttpHeaders headers) {
-
+		GitHubResumeDto dto = new GitHubResumeDto();
 		MediaType responseContentType = determineResponseContentType(headers, requestedMediaType);
 		GitHubAccountOwnerDao gitHubAccountOwnerDao = gitHubResumeService.getGitHubAccount(accountOwner);
-		List<GitHubRepositoryDao> gitHubRepositoryDaoList = gitHubResumeService
-				.getGitHubRepositoriesForAccount(accountOwner);
-		GitHubResumeDao dao = fillDao(gitHubAccountOwnerDao, gitHubRepositoryDaoList);
-		GitHubResumeDto dto = modelMapper.map(dao, GitHubResumeDto.class);
+		if (gitHubAccountOwnerDao != null) {
+			List<GitHubRepositoryDao> gitHubRepositoryDaoList = gitHubResumeService
+					.getGitHubRepositoriesForAccount(accountOwner);
+			GitHubResumeDao dao = fillDao(gitHubAccountOwnerDao, gitHubRepositoryDaoList);
+			dto = modelMapper.map(dao, GitHubResumeDto.class);
+		}
 		return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, responseContentType.toString()).body(dto);
 	}
 
