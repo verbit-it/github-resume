@@ -5,16 +5,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.thymeleaf.util.ListUtils;
-import org.thymeleaf.util.StringUtils;
 
 import com.verbit.github.resume.dao.GitHubAccountOwnerDao;
 import com.verbit.github.resume.dao.GitHubRepositoryDao;
@@ -27,6 +30,9 @@ import com.verbit.github.resume.service.GitHubResumeService;
 @RequestMapping(path = "/github")
 public class GitHubResumeController {
 
+	public static final String SUPPORTED_MEDIA_TYPE_JSON = "json";
+	public static final String SUPPORTED_MEDIA_TYPE_XML = "xml";
+
 	@Autowired
 	private GitHubResumeService gitHubResumeService;
 
@@ -35,12 +41,43 @@ public class GitHubResumeController {
 
 	@GetMapping(value = "resume/{account}", produces = { MediaType.APPLICATION_JSON_VALUE,
 			MediaType.APPLICATION_XML_VALUE }, consumes = MediaType.ALL_VALUE)
-	public @ResponseBody GitHubResumeDto getAccount(@PathVariable("account") String accountOwner, String mediaType) {
+	public ResponseEntity<GitHubResumeDto> getAccount(@PathVariable("account") String accountOwner,
+			@RequestParam(name = "mediaType", required = false) String requestedMediaType,
+			@RequestHeader HttpHeaders headers) {
+
+		MediaType responseContentType = determineResponseContentType(headers, requestedMediaType);
 		GitHubAccountOwnerDao gitHubAccountOwnerDao = gitHubResumeService.getGitHubAccount(accountOwner);
 		List<GitHubRepositoryDao> gitHubRepositoryDaoList = gitHubResumeService
 				.getGitHubRepositoriesForAccount(accountOwner);
 		GitHubResumeDao dao = fillDao(gitHubAccountOwnerDao, gitHubRepositoryDaoList);
-		return modelMapper.map(dao, GitHubResumeDto.class);
+		GitHubResumeDto dto = modelMapper.map(dao, GitHubResumeDto.class);
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, responseContentType.toString()).body(dto);
+	}
+
+	private MediaType determineResponseContentType(HttpHeaders headers, String requestedMediaType) {
+		if (!CollectionUtils.isEmpty(headers.getAccept())) {
+			// ignore requested media type value -> use accept header sent by the client
+			List<MediaType> mediaTypeAcceptHeaderList = headers.getAccept();
+			if (mediaTypeAcceptHeaderList.stream().anyMatch(item -> (!StringUtils.isEmpty(item.toString())
+					&& item.toString().contains(MediaType.APPLICATION_JSON_VALUE)))) {
+				return MediaType.APPLICATION_JSON;
+			}
+			if (mediaTypeAcceptHeaderList.stream().anyMatch(item -> (!StringUtils.isEmpty(item.toString())
+					&& item.toString().contains(MediaType.APPLICATION_XML_VALUE)))) {
+				return MediaType.APPLICATION_XML;
+			}
+		}
+		if (!StringUtils.isEmpty(requestedMediaType)) {
+			if (SUPPORTED_MEDIA_TYPE_JSON.equals(requestedMediaType)) {
+				return MediaType.APPLICATION_JSON;
+			}
+			if (SUPPORTED_MEDIA_TYPE_XML.equals(requestedMediaType)) {
+				return MediaType.APPLICATION_XML;
+			}
+		}
+
+		// default
+		return MediaType.APPLICATION_JSON;
 	}
 
 	private GitHubResumeDao fillDao(GitHubAccountOwnerDao gitHubAccountOwnerDao,
@@ -48,7 +85,7 @@ public class GitHubResumeController {
 		GitHubResumeDao dao = new GitHubResumeDao();
 		dao.setUsername(gitHubAccountOwnerDao.getLogin());
 		dao.setWebsiteUrl(gitHubAccountOwnerDao.getBlog());
-		if (!ListUtils.isEmpty(gitHubRepositoryDaoList)) {
+		if (!CollectionUtils.isEmpty(gitHubRepositoryDaoList)) {
 			dao.setAmountOfCreatedRepositories(gitHubRepositoryDaoList.size());
 			dao.setGitHubRepositories(gitHubRepositoryDaoList);
 			dao.setGitHubStatisticalData(fillStatisticalDataDao(gitHubRepositoryDaoList));
@@ -59,7 +96,7 @@ public class GitHubResumeController {
 	private List<GitHubStatisticalDataDao> fillStatisticalDataDao(List<GitHubRepositoryDao> gitHubRepositoryDaoList) {
 		List<GitHubStatisticalDataDao> gitHubStatisticalDataDaoList = new ArrayList<>();
 
-		if (!ListUtils.isEmpty(gitHubRepositoryDaoList)) {
+		if (!CollectionUtils.isEmpty(gitHubRepositoryDaoList)) {
 			Map<String, List<GitHubRepositoryDao>> map = gitHubRepositoryDaoList.stream()
 					.filter(dao -> !StringUtils.isEmpty(dao.getLanguage()))
 					.collect(Collectors.groupingBy(GitHubRepositoryDao::getLanguage));
@@ -74,7 +111,7 @@ public class GitHubResumeController {
 			Integer amountOfRepositories, List<GitHubStatisticalDataDao> gitHubStatisticalDataDaoList) {
 		GitHubStatisticalDataDao gitHubStatisticalDataDao = new GitHubStatisticalDataDao();
 		gitHubStatisticalDataDao.setLanguageeName(language);
-		if (!ListUtils.isEmpty(repoList)) {
+		if (!CollectionUtils.isEmpty(repoList)) {
 			gitHubStatisticalDataDao.setLanguageRatio((repoList.size() / (double) amountOfRepositories) * 100);
 		}
 		gitHubStatisticalDataDaoList.add(gitHubStatisticalDataDao);
