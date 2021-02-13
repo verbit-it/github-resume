@@ -60,7 +60,6 @@ public class GitHubRestClient {
 
 	private HttpEntity<String> initHeader() {
 		HttpHeaders headers = new HttpHeaders();
-		headers.set("User-Agent", "profile-analyzer");
 		if (!StringUtils.isEmpty(gitHubAccessProperties.getToken())) {
 			headers.setBearerAuth(gitHubAccessProperties.getToken());
 		}
