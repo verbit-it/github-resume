@@ -112,7 +112,7 @@ public class GitHubResumeController {
 	private void calculateStatisticalData(String language, List<GitHubRepositoryDao> repoList,
 			Integer amountOfRepositories, List<GitHubStatisticalDataDao> gitHubStatisticalDataDaoList) {
 		GitHubStatisticalDataDao gitHubStatisticalDataDao = new GitHubStatisticalDataDao();
-		gitHubStatisticalDataDao.setLanguageeName(language);
+		gitHubStatisticalDataDao.setLanguageName(language);
 		if (!CollectionUtils.isEmpty(repoList)) {
 			gitHubStatisticalDataDao.setLanguageRatio((repoList.size() / (double) amountOfRepositories) * 100);
 		}

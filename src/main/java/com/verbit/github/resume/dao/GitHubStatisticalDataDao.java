@@ -9,8 +9,8 @@ public class GitHubStatisticalDataDao {
 		return languageName;
 	}
 
-	public void setLanguageeName(String languageeName) {
-		this.languageName = languageeName;
+	public void setLanguageName(String languageName) {
+		this.languageName = languageName;
 	}
 
 	public Double getLanguageRatio() {
